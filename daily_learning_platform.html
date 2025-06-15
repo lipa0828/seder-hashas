@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סדר השס - Daily Talmud Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3a5f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .hebrew-text {
+            font-family: 'Times New Roman', serif;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            direction: rtl;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            direction: rtl;
+        }
+
+        .date-display {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .daf-cycle {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: white;
+            border: 2px solid gold;
+        }
+
+        .learning-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .daf-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-right: 5px solid #2c5aa0;
+        }
+
+        .daf-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .daf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .masechta-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c5aa0;
+            direction: rtl;
+        }
+
+        .daf-number {
+            background: #2c5aa0;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .daf-content {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .hebrew-content {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border-right: 4px solid #2c5aa0;
+        }
+
+        .daf-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #2c5aa0;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3a5f;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .progress-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+        }
+
+        .progress-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .shas-progress {
+            width: 100%;
+            height: 15px;
+            background: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .shas-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2c5aa0, #ffd700);
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .cycle-info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(44, 90, 160, 0.1);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 3% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .commentary-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 10px;
+            border-right: 4px solid #4682b4;
+        }
+
+        /* Admin Portal Styles */
+        .admin-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 15px;
+        }
+
+        .admin-nav button {
+            padding: 10px 20px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-nav button.active {
+            background: #2c5aa0;
+            color: white;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .hebrew-input {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .daf-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .daf-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .daf-item:hover {
+            background: #f5f5f5;
+        }
+
+        .daf-item.selected {
+            background: #e3f2fd;
+            border-left: 4px solid #2c5aa0;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .stats-admin {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-nav {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .learning-board {
+                grid-template-columns: 1fr;
+            }
+            
+            .daf-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                text-align: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="hebrew-text">📚 סדר השס - לימוד יומי</h1>
+            <div class="hebrew-text" style="font-size: 1.4rem; margin: 15px 0; color: gold; font-weight: bold;">
+                "לוּלֵא תוֹרָתְךָ שַׁעֲשֻׁעָי אָז אָבַדְתִּי בְעָנְיִי"
+            </div>
+            <p class="hebrew-text" style="font-size: 1rem; opacity: 0.9;">
+                תהילים קי"ט:צ"ב
+            </p>
+            <p class="hebrew-text">דף יומי ולימוד סדור של כל השס</p>
+            
+            <!-- Admin Access Button -->
+            <div style="margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="toggleAdminLogin()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                    🔐 Admin Portal
+                </button>
+            </div>
+        </div>
+
+        <div class="date-display" id="currentDate">
+            Loading today's date...
+        </div>
+
+        <div class="daf-cycle">
+            <h3>🔄 מחזור השס הנוכחי</h3>
+            <p>מחזור 14 - התחלה: 5 בינואר 2020</p>
+            <p id="cycleProgress">נותרו כ-1,247 ימים להשלמת המחזור</p>
+        </div>
+
+        <div class="learning-board" id="learningBoard">
+            <!-- Daf content will be loaded here -->
+        </div>
+
+        <div class="progress-section">
+            <h3 class="progress-title">📈 התקדמות בלימוד השס</h3>
+            <div class="shas-progress">
+                <div class="shas-fill" id="shasProgressFill" style="width: 42%"></div>
+            </div>
+            <div class="cycle-info">42% מהמחזור הושלם</div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="dafimCompleted">987</div>
+                    <div class="stat-label">דפים הושלמו</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="masechotCompleted">8</div>
+                    <div class="stat-label">מסכתות הושלמו</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="streakDays">127</div>
+                    <div class="stat-label">רצף ימים</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalHours">445</div>
+                    <div class="stat-label">שעות לימוד</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for viewing daf -->
+    <div id="dafModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalContent">
+                <!-- Daf content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close" onclick="closeAdminLogin()">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">🔐 Admin Login</h2>
+            <div id="loginForm">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px;">Username:</label>
+                    <input type="text" id="adminUsername" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px;">Password:</label>
+                    <input type="password" id="adminPassword" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <button onclick="adminLogin()" class="btn btn-primary" style="width: 100%;">Login</button>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #666; text-align: center;">
+                    Demo: admin / admin123
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Portal Modal -->
+    <div id="adminPortalModal" class="modal">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh;">
+            <span class="close" onclick="closeAdminPortal()">&times;</span>
+            <div id="adminPortalContent">
+                <!-- Admin content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Talmud data - current dafim
+        const dafim = [
+            {
+                id: 1,
+                masechta: "מסכת ברכות",
+                daf: "דף כ\"ג ע\"א",
+                hebrewTitle: "ברכות כ\"ג ע\"א",
+                englishTitle: "Berachot 23a",
+                topic: "הלכות ברכות וטהרה",
+                content: "Today's daf discusses the laws of blessings and ritual purity, including when one may recite blessings in various states of cleanliness.",
+                hebrewContent: "בגמרא דנו חכמים על הלכות ברכות וטהרה, מתי מותר לברך ברכות במצבי טהרה שונים. נדונו שאלות של קריאת שמע בזמן שאדם אינו נקי.",
+                fullContent: `
+                    <h2 class="hebrew-text">מסכת ברכות דף כ"ג עמוד א</h2>
+                    <div class="hebrew-content">
+                        <strong>המשנה:</strong><br>
+                        "בעל קרי שנטבל ולא הטיל מים, כשהוא מטיל מים - חוזר ליטמא"
+                    </div>
+                    
+                    <div class="commentary-section">
+                        <strong>פירוש רש"י:</strong><br>
+                        רש"י מפרש שהמשנה עוסקת בדיני טהרה וטומאה הקשורים לקריאת שמע וברכות.
+                    </div>
+                    
+                    <h3>נושאים מרכזיים בדף:</h3>
+                    <ul>
+                        <li>דיני טבילה לבעל קרי</li>
+                        <li>קריאת שמע בזמן טומאה</li>
+                        <li>ברכות בזמן עשיית צרכים</li>
+                        <li>הלכות צניעות</li>
+                    </ul>
+                    
+                    <div class="commentary-section">
+                        <strong>תוספות:</strong><br>
+                        התוספות דנים במחלוקת בין חכמים לגבי חיוב טבילה לבעל קרי לפני קריאת שמע.
+                    </div>
+                    
+                    <h3>שאלות לעיון:</h3>
+                    <ol>
+                        <li>מה ההבדל בין טומאת בעל קרי לטומאות אחרות?</li>
+                        <li>מתי התירו חכמים קריאת שמע לבעל קרי?</li>
+                        <li>איך קשורים דיני צניעות לדיני ברכות?</li>
+                    </ol>
+                `,
+                completed: false,
+                date: "היום"
+            },
+            {
+                id: 2,
+                masechta: "מסכת ברכות",
+                daf: "דף כ\"ב ע\"ב",
+                hebrewTitle: "ברכות כ\"ב ע\"ב",
+                englishTitle: "Berachot 22b",
+                topic: "תפילה וטומאה",
+                content: "Yesterday's daf explored the relationship between prayer and ritual impurity, including the famous discussion of Rabbi Yehuda's opinion.",
+                hebrewContent: "אתמול למדנו על הקשר בין תפילה לטומאה, כולל הדיון המפורסם בדעת רבי יהודה בנושא זה.",
+                fullContent: `
+                    <h2 class="hebrew-text">מסכת ברכות דף כ"ב עמוד ב</h2>
+                    <div class="hebrew-content">
+                        <strong>הגמרא דנה:</strong><br>
+                        "רבי יהודה אומר: דברי תורה אינן מקבלין טומאה"
+                    </div>
+                    
+                    <div class="commentary-section">
+                        <strong>מחלוקת התנאים:</strong><br>
+                        נחלקו החכמים האם בעל קרי מותר לעסוק בתורה ותפילה לפני טבילה.
+                    </div>
+                    
+                    <h3>עיקרי הדף:</h3>
+                    <ul>
+                        <li>מחלוקת רבי יהודה וחכמים</li>
+                        <li>טעמי ההלכה</li>
+                        <li>השוואה לטומאות אחרות</li>
+                        <li>היתר והחמרה</li>
+                    </ul>
+                `,
+                completed: true,
+                date: "אתמול"
+            },
+            {
+                id: 3,
+                masechta: "מסכת ברכות",
+                daf: "דף כ\"א ע\"ב",
+                hebrewTitle: "ברכות כ\"א ע\"ב", 
+                englishTitle: "Berachot 21b",
+                topic: "ברכת המזון",
+                content: "Two days ago we learned about Birkat HaMazon (Grace After Meals) and its various laws and customs.",
+                hebrewContent: "לפני יומיים למדנו על ברכת המזון והלכותיה ומנהגיה השונים.",
+                fullContent: `
+                    <h2 class="hebrew-text">מסכת ברכות דף כ"א עמוד ב</h2>
+                    <div class="hebrew-content">
+                        <strong>הגמרא אומרת:</strong><br>
+                        "נשים וירכי חייבין בברכת המזון מן התורה"
+                    </div>
+                    
+                    <div class="commentary-section">
+                        <strong>הלכות ברכת המזון:</strong><br>
+                        הדף עוסק בחיובי ברכת המזון לקטגוריות שונות של אנשים.
+                    </div>
+                    
+                    <h3>נושאים בדף:</h3>
+                    <ul>
+                        <li>חיוב נשים בברכת המזון</li>
+                        <li>חיוב קטנים</li>
+                        <li>שיעור אכילה לחיוב</li>
+                        <li>זמן ברכת המזון</li>
+                    </ul>
+                `,
+                completed: true,
+                date: "שלשום"
+            }
+        ];
+
+        // Initialize the page
+        function init() {
+            updateCurrentDate();
+            loadDafim();
+            setupModal();
+            updateStats();
+            updateCycleInfo();
+        }
+
+        // Update current date display
+        function updateCurrentDate() {
+            const now = new Date();
+            const hebrewDate = getHebrewDate();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').innerHTML = 
+                `<div>היום: ${now.toLocaleDateString('he-IL', options)}</div>
+                 <div class="hebrew-text">${hebrewDate}</div>`;
+        }
+
+        // Get Hebrew date (simplified)
+        function getHebrewDate() {
+            const hebrewMonths = ['תשרי', 'חשון', 'כסלו', 'טבת', 'שבט', 'אדר', 'ניסן', 'אייר', 'סיון', 'תמוז', 'אב', 'אלול'];
+            const now = new Date();
+            const month = hebrewMonths[now.getMonth()];
+            return `ט"ו ${month} תשפ"ה`; // Example Hebrew date
+        }
+
+        // Load dafim into the board
+        function loadDafim() {
+            const board = document.getElementById('learningBoard');
+            board.innerHTML = '';
+
+            dafim.forEach(daf => {
+                const card = createDafCard(daf);
+                board.appendChild(card);
+            });
+        }
+
+        // Create daf card HTML
+        function createDafCard(daf) {
+            const card = document.createElement('div');
+            card.className = 'daf-card';
+            card.innerHTML = `
+                <div class="daf-header">
+                    <h3 class="masechta-title hebrew-text">${daf.masechta}</h3>
+                    <span class="daf-number">${daf.daf}</span>
+                </div>
+                <div class="hebrew-content">
+                    <strong>נושא:</strong> ${daf.topic}
+                </div>
+                <div class="daf-content">
+                    ${daf.content}
+                </div>
+                <div class="hebrew-content">
+                    ${daf.hebrewContent}
+                </div>
+                <div class="daf-actions">
+                    <button class="btn btn-primary" onclick="viewDaf(${daf.id})">
+                        📖 לקרוא דף - היינטיגע בלאט
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadPDF(${daf.id})">
+                        📄 הורד PDF - נעם אראפ היינטיגע בלאט
+                    </button>
+                    <button class="btn btn-secondary" onclick="markComplete(${daf.id})">
+                        ${daf.completed ? '✅ הושלם - צייכן אן גילערנט' : '⭕ סמן כהושלם - צייכן אן גילערנט'}
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        // View daf in modal
+        function viewDaf(dafId) {
+            const daf = dafim.find(d => d.id === dafId);
+            if (daf) {
+                document.getElementById('modalContent').innerHTML = daf.fullContent;
+                document.getElementById('dafModal').style.display = 'block';
+            }
+        }
+
+        // Download daf as PDF
+        function downloadPDF(dafId) {
+            const daf = dafim.find(d => d.id === dafId);
+            if (daf) {
+                // Create PDF content
+                const pdfContent = `
+סדר השס - לימוד יומי
+${daf.masechta} - ${daf.daf}
+${daf.englishTitle}
+
+נושא: ${daf.topic}
+
+תוכן הדף:
+${daf.fullContent.replace(/<[^>]*>/g, '\n').replace(/\n+/g, '\n').trim()}
+
+---
+הופק מפלטפורמת לימוד השס
+הורד בתאריך: ${new Date().toLocaleDateString('he-IL')}
+                `;
+
+                // Create and download the file
+                const blob = new Blob([pdfContent], { type: 'text/plain;charset=utf-8' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${daf.hebrewTitle.replace(/[^א-ת0-9]/g, '_')}.txt`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+
+                alert(`📄 הורד: ${daf.masechta} ${daf.daf}\n\nהערה: באפליקציה אמיתית זה יהיה קובץ PDF. כרגע זה מוריד כקובץ טקסט.`);
+            }
+        }
+
+        // Mark daf as complete
+        function markComplete(dafId) {
+            const daf = dafim.find(d => d.id === dafId);
+            if (daf) {
+                daf.completed = !daf.completed;
+                loadDafim(); // Refresh the display
+                updateStats();
+                
+                if (daf.completed) {
+                    alert(`🎉 כל הכבוד! השלמת: ${daf.masechta} ${daf.daf}`);
+                }
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const completed = dafim.filter(d => d.completed).length;
+            const totalDafim = 2711; // Total pages in Shas
+            const currentProgress = 987; // Example current progress
+            const progressPercent = Math.round((currentProgress / totalDafim) * 100);
+            
+            document.getElementById('dafimCompleted').textContent = currentProgress;
+            document.getElementById('shasProgressFill').style.width = progressPercent + '%';
+        }
+
+        // Update cycle information
+        function updateCycleInfo() {
+            // Calculate days remaining in current cycle (example)
+            const cycleStart = new Date('2020-01-05');
+            const cycleDays = 2711;
+            const now = new Date();
+            const daysElapsed = Math.floor((now - cycleStart) / (1000 * 60 * 60 * 24));
+            const daysRemaining = cycleDays - (daysElapsed % cycleDays);
+            
+            document.getElementById('cycleProgress').textContent = 
+                `נותרו כ-${daysRemaining} ימים להשלמת המחזור`;
+        }
+
+        // Setup modal functionality
+        function setupModal() {
+            const modal = document.getElementById('dafModal');
+            const closeBtn = document.querySelector('.close');
+
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+            }
+
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Admin Portal Functions
+        let isAdminLoggedIn = false;
+        let currentAdminSection = 'dashboard';
+        let selectedDafForEdit = null;
+
+        function toggleAdminLogin() {
+            if (isAdminLoggedIn) {
+                openAdminPortal();
+            } else {
+                document.getElementById('adminLoginModal').style.display = 'block';
+            }
+        }
+
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            // Simple demo authentication
+            if (username === 'admin' && password === 'admin123') {
+                isAdminLoggedIn = true;
+                closeAdminLogin();
+                openAdminPortal();
+                alert('✅ התחברת בהצלחה לפורטל הניהול!');
+            } else {
+                alert('❌ שם משתמש או סיסמה שגויים');
+            }
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function openAdminPortal() {
+            loadAdminPortal();
+            document.getElementById('adminPortalModal').style.display = 'block';
+        }
+
+        function closeAdminPortal() {
+            document.getElementById('adminPortalModal').style.display = 'none';
+        }
+
+        function loadAdminPortal() {
+            const adminContent = document.getElementById('adminPortalContent');
+            adminContent.innerHTML = `
+                <h2 style="text-align: center; margin-bottom: 20px;">🛠️ Admin Portal - פורטל ניהול</h2>
+                
+                <div class="admin-nav">
+                    <button onclick="switchAdminSection('dashboard')" class="active" id="nav-dashboard">📊 Dashboard</button>
+                    <button onclick="switchAdminSection('add-daf')" id="nav-add-daf">➕ Add Daf</button>
+                    <button onclick="switchAdminSection('manage-dafim')" id="nav-manage-dafim">📝 Manage Dafim</button>
+                    <button onclick="switchAdminSection('settings')" id="nav-settings">⚙️ Settings</button>
+                </div>
+
+                <div id="admin-dashboard" class="admin-section active">
+                    ${getAdminDashboard()}
+                </div>
+
+                <div id="admin-add-daf" class="admin-section">
+                    ${getAddDafForm()}
+                </div>
+
+                <div id="admin-manage-dafim" class="admin-section">
+                    ${getManageDafimSection()}
+                </div>
+
+                <div id="admin-settings" class="admin-section">
+                    ${getSettingsSection()}
+                </div>
+            `;
+        }
+
+        function switchAdminSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.admin-nav button').forEach(b => b.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(`admin-${section}`).classList.add('active');
+            document.getElementById(`nav-${section}`).classList.add('active');
+            
+            currentAdminSection = section;
+        }
+
+        function getAdminDashboard() {
+            const totalDafim = dafim.length;
+            const completedDafim = dafim.filter(d => d.completed).length;
+            const recentDafim = dafim.slice(0, 3);
+
+            return `
+                <div class="stats-admin">
+                    <div class="admin-stat-card">
+                        <h3>${totalDafim}</h3>
+                        <p>Total Dafim</p>
+                    </div>
+                    <div class="admin-stat-card">
+                        <h3>${completedDafim}</h3>
+                        <p>Completed Dafim</p>
+                    </div>
+                    <div class="admin-stat-card">
+                        <h3>987</h3>
+                        <p>Total Users</p>
+                    </div>
+                    <div class="admin-stat-card">
+                        <h3>127</h3>
+                        <p>Active Streak</p>
+                    </div>
+                </div>
+
+                <h3>Recent Activity</h3>
+                <div class="daf-list">
+                    ${recentDafim.map(daf => `
+                        <div class="daf-item">
+                            <strong>${daf.masechta} - ${daf.daf}</strong><br>
+                            <span style="color: #666; font-size: 0.9rem;">${daf.topic}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getAddDafForm() {
+            return `
+                <h3>הוסף דף חדש - Add New Daf</h3>
+                <form onsubmit="addNewDaf(event)">
+                    <div class="admin-grid">
+                        <div>
+                            <div class="form-group">
+                                <label>Masechta (מסכת):</label>
+                                <input type="text" id="new-masechta" class="hebrew-input" placeholder="מסכת ברכות" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Daf Number (דף):</label>
+                                <input type="text" id="new-daf" class="hebrew-input" placeholder="דף כ״ג ע״א" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>English Title:</label>
+                                <input type="text" id="new-english-title" placeholder="Berachot 23a" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Topic (נושא):</label>
+                                <input type="text" id="new-topic" class="hebrew-input" placeholder="הלכות ברכות וטהרה" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Date (תאריך):</label>
+                                <select id="new-date">
+                                    <option value="היום">היום</option>
+                                    <option value="אתמול">אתמול</option>
+                                    <option value="שלשום">שלשום</option>
+                                    <option value="לפני 3 ימים">לפני 3 ימים</option>
+                                    <option value="לפני שבוע">לפני שבוע</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="form-group">
+                                <label>English Content:</label>
+                                <textarea id="new-content" placeholder="Brief description in English..." required></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Hebrew Content (תוכן עברי):</label>
+                                <textarea id="new-hebrew-content" class="hebrew-input" placeholder="תיאור קצר בעברית..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Full Content (HTML supported):</label>
+                        <textarea id="new-full-content" style="min-height: 200px;" placeholder="Full lesson content with HTML formatting..." required></textarea>
+                    </div>
+                    
+                    <div class="admin-actions">
+                        <button type="submit" class="btn btn-success">💾 Save Daf</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearAddDafForm()">🗑️ Clear Form</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function getManageDafimSection() {
+            return `
+                <h3>נהל דפים - Manage Dafim</h3>
+                <div class="admin-grid">
+                    <div>
+                        <h4>Existing Dafim</h4>
+                        <div class="daf-list">
+                            ${dafim.map((daf, index) => `
+                                <div class="daf-item ${selectedDafForEdit === index ? 'selected' : ''}" onclick="selectDafForEdit(${index})">
+                                    <strong>${daf.masechta} - ${daf.daf}</strong><br>
+                                    <span style="color: #666; font-size: 0.9rem;">${daf.topic}</span><br>
+                                    <span style="color: ${daf.completed ? 'green' : 'orange'}; font-size: 0.8rem;">
+                                        ${daf.completed ? '✅ Completed' : '⏳ Pending'}
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4>Edit Selected Daf</h4>
+                        <div id="edit-daf-form">
+                            ${selectedDafForEdit !== null ? getEditDafForm(selectedDafForEdit) : '<p style="color: #666;">Select a daf from the list to edit</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getEditDafForm(index) {
+            const daf = dafim[index];
+            return `
+                <form onsubmit="updateDaf(event, ${index})">
+                    <div class="form-group">
+                        <label>Masechta:</label>
+                        <input type="text" id="edit-masechta" class="hebrew-input" value="${daf.masechta}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Daf Number:</label>
+                        <input type="text" id="edit-daf" class="hebrew-input" value="${daf.daf}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Topic:</label>
+                        <input type="text" id="edit-topic" class="hebrew-input" value="${daf.topic}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>English Content:</label>
+                        <textarea id="edit-content" required>${daf.content}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Hebrew Content:</label>
+                        <textarea id="edit-hebrew-content" class="hebrew-input" required>${daf.hebrewContent}</textarea>
+                    </div>
+                    
+                    <div class="admin-actions">
+                        <button type="submit" class="btn btn-success">💾 Update Daf</button>
+                        <button type="button" class="btn btn-danger" onclick="deleteDaf(${index})">🗑️ Delete Daf</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function getSettingsSection() {
+            return `
+                <h3>הגדרות - Settings</h3>
+                
+                <div class="form-group">
+                    <label>Current Cycle Start Date:</label>
+                    <input type="date" id="cycle-start-date" value="2020-01-05">
+                </div>
+                
+                <div class="form-group">
+                    <label>Platform Title:</label>
+                    <input type="text" id="platform-title" value="סדר השס - לימוד יומי">
+                </div>
+                
+                <div class="form-group">
+                    <label>Default Progress (%):</label>
+                    <input type="number" id="default-progress" min="0" max="100" value="42">
+                </div>
+                
+                <div class="admin-actions">
+                    <button class="btn btn-success" onclick="saveSettings()">💾 Save Settings</button>
+                    <button class="btn btn-secondary" onclick="exportData()">📤 Export Data</button>
+                    <button class="btn btn-secondary" onclick="importData()">📥 Import Data</button>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                    <h4>Backup & Restore</h4>
+                    <p>Export your dafim data as JSON or import from a backup file.</p>
+                    <input type="file" id="import-file" accept=".json" style="margin-top: 10px;">
+                </div>
+            `;
+        }
+
+        function selectDafForEdit(index) {
+            selectedDafForEdit = index;
+            // Refresh the manage section to show the edit form
+            document.getElementById('admin-manage-dafim').innerHTML = getManageDafimSection();
+        }
+
+        function addNewDaf(event) {
+            event.preventDefault();
+            
+            const newDaf = {
+                id: Date.now(), // Simple ID generation
+                masechta: document.getElementById('new-masechta').value,
+                daf: document.getElementById('new-daf').value,
+                hebrewTitle: document.getElementById('new-daf').value,
+                englishTitle: document.getElementById('new-english-title').value,
+                topic: document.getElementById('new-topic').value,
+                content: document.getElementById('new-content').value,
+                hebrewContent: document.getElementById('new-hebrew-content').value,
+                fullContent: document.getElementById('new-full-content').value,
+                completed: false,
+                date: document.getElementById('new-date').value
+            };
+            
+            dafim.unshift(newDaf); // Add to beginning
+            loadDafim(); // Refresh main display
+            clearAddDafForm();
+            alert('✅ דף חדש נוסף בהצלחה!');
+        }
+
+        function clearAddDafForm() {
+            document.getElementById('new-masechta').value = '';
+            document.getElementById('new-daf').value = '';
+            document.getElementById('new-english-title').value = '';
+            document.getElementById('new-topic').value = '';
+            document.getElementById('new-content').value = '';
+            document.getElementById('new-hebrew-content').value = '';
+            document.getElementById('new-full-content').value = '';
+        }
+
+        function updateDaf(event, index) {
+            event.preventDefault();
+            
+            dafim[index].masechta = document.getElementById('edit-masechta').value;
+            dafim[index].daf = document.getElementById('edit-daf').value;
+            dafim[index].topic = document.getElementById('edit-topic').value;
+            dafim[index].content = document.getElementById('edit-content').value;
+            dafim[index].hebrewContent = document.getElementById('edit-hebrew-content').value;
+            
+            loadDafim(); // Refresh main display
+            alert('✅ הדף עודכן בהצלחה!');
+        }
+
+        function deleteDaf(index) {
+            if (confirm('האם אתה בטוח שברצונך למחוק דף זה?')) {
+                dafim.splice(index, 1);
+                selectedDafForEdit = null;
+                loadDafim(); // Refresh main display
+                document.getElementById('admin-manage-dafim').innerHTML = getManageDafimSection();
+                alert('✅ הדף נמחק בהצלחה!');
+            }
+        }
+
+        function saveSettings() {
+            alert('✅ ההגדרות נשמרו בהצלחה!');
+        }
+
+        function exportData() {
+            const dataToExport = {
+                dafim: dafim,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `shas_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        if (importedData.dafim && Array.isArray(importedData.dafim)) {
+                            dafim.length = 0; // Clear current data
+                            dafim.push(...importedData.dafim); // Add imported data
+                            loadDafim(); // Refresh display
+                            alert('✅ הנתונים יובאו בהצלחה!');
+                        } else {
+                            alert('❌ פורמט קובץ לא תקין');
+                        }
+                    } catch (error) {
+                        alert('❌ שגיאה בקריאת הקובץ');
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                alert('❌ אנא בחר קובץ לייבוא');
+            }
+        }
+    </script>
+</body>
+</html>
